@@ -4707,9 +4707,6 @@ def _check_project_hooks_trust(
     return WorkspaceTrust.none()
 
 
-_PROJECT_EXTENSIONS_REMEMBER_LABEL = "Always allow extensions in this project"
-
-
 def _check_project_extensions_trust(
     *,
     trust_flag: bool = False,
@@ -4782,7 +4779,7 @@ def _check_project_extensions_trust(
     )
     action = _select_trust_action(
         console,
-        remember_label=_PROJECT_EXTENSIONS_REMEMBER_LABEL,
+        remember_label="Always allow extensions in this project",
     )
     if action in {
         _TrustPromptOutcome.INTERRUPTED,
