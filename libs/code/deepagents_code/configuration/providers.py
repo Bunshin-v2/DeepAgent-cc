@@ -133,6 +133,13 @@ def coerce_environment_value(
         if value:
             return Found(value)
         return Invalid(f"Ignoring {name}={raw!r} (expected non-empty string)")
+    if kind is OptionKind.EXTENSION_TRUST_DELEGATE:
+        from deepagents_code.extensions.settings import parse_trust_policy
+
+        policy = parse_trust_policy(raw)
+        if policy is not None:
+            return Found(policy.value)
+        return Invalid(f"Ignoring {name}={raw!r} (expected ask, always, or never)")
     if kind is OptionKind.LOG_LEVEL_DELEGATE:
         from deepagents_code._debug import LOG_LEVELS
 
@@ -263,6 +270,12 @@ def coerce_toml_value(
             return Found(parse_model_allowlist(raw))
         except (TypeError, ValueError) as exc:
             return Invalid(f"Ignoring {label} in {source}: {exc}")
+    elif kind is OptionKind.EXTENSION_TRUST_DELEGATE:
+        from deepagents_code.extensions.settings import parse_trust_policy
+
+        policy = parse_trust_policy(raw)
+        if policy is not None:
+            return Found(policy.value)
     elif kind is OptionKind.SKILLS_DIRS_DELEGATE:
         if isinstance(raw, list):
             from deepagents_code.config import _parse_extra_skills_dirs
