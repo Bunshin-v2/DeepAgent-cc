@@ -2546,6 +2546,7 @@ def create_cli_agent(
         if cwd is not None
         else (project_context.user_cwd if project_context is not None else None)
     )
+
     # Setup agent directory for persistent memory (if enabled)
     if enable_memory or enable_skills:
         agent_dir = settings.ensure_agent_dir(assistant_id)
@@ -3314,18 +3315,6 @@ def create_cli_agent(
     )
     extension_tools = extension_registry.tool_units()
     extension_tool_names = {registered.name for registered in extension_tools}
-    built_in_tool_names = {
-        name
-        for item in tools
-        if (name := getattr(item, "name", None) or getattr(item, "__name__", None))
-    }
-    for registered in extension_tools:
-        if registered.name in built_in_tool_names:
-            logger.warning(
-                "Extension tool %r from %s overrides a built-in tool",
-                registered.name,
-                registered.source.label,
-            )
     tools = [
         item
         for item in tools
@@ -3336,16 +3325,6 @@ def create_cli_agent(
     extension_middleware_names = {
         registered.name for registered in extension_registry.middleware
     }
-    built_in_middleware_names = {
-        getattr(item, "name", type(item).__name__) for item in agent_middleware
-    }
-    for registered in extension_registry.middleware:
-        if registered.name in built_in_middleware_names:
-            logger.warning(
-                "Extension middleware %r from %s overrides built-in middleware",
-                registered.name,
-                registered.source.label,
-            )
     agent_middleware = [
         item
         for item in agent_middleware
