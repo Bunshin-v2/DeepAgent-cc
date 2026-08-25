@@ -811,23 +811,19 @@ def create_deep_agent(  # noqa: C901, PLR0912, PLR0915  # Complex graph assembly
         if _profile.excluded_tools:
             gp_middleware.append(_ToolExclusionMiddleware(excluded=_profile.excluded_tools))
 
-        general_purpose_spec: SubAgent = {
-            **GENERAL_PURPOSE_SUBAGENT,
+        # EVAL BRANCH: default general-purpose subagent forced into fork mode
+        # (`bengret/sug-agent-forking-evals`, compared against
+        # `bengret/feat-subagent-forking`'s isolated default). Not meant to merge.
+        general_purpose_spec: ForkedSubAgent = {
+            "name": GENERAL_PURPOSE_SUBAGENT["name"],
+            "description": GENERAL_PURPOSE_SUBAGENT["description"],
             "model": model,
             "tools": _tools or [],
             "middleware": gp_middleware,
+            "mode": "fork",
         }
         if gp_profile.description is not None:
             general_purpose_spec["description"] = gp_profile.description
-        if gp_profile.system_prompt is not None:
-            # GP-specific override beats `profile.base_system_prompt`; only the
-            # profile suffix layers on top.
-            gp_prompt = gp_profile.system_prompt
-            if _profile.system_prompt_suffix is not None:
-                gp_prompt = gp_prompt + "\n\n" + _profile.system_prompt_suffix
-            general_purpose_spec["system_prompt"] = gp_prompt
-        else:
-            general_purpose_spec["system_prompt"] = _apply_profile_prompt(_profile, GENERAL_PURPOSE_SUBAGENT["system_prompt"])
         gp_interrupt_on = _merge_fs_interrupt_on(
             _build_interrupt_on_from_permissions(permissions or []),
             interrupt_on,
