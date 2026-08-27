@@ -5082,6 +5082,11 @@ def cli_main() -> None:
         # credentials from the environment expecting `.env` to be loaded.
         from deepagents_code.config import console, settings  # noqa: F401
 
+        if machine_run_json:
+            from rich.console import Console as _Console
+
+            console = _Console(stderr=True)
+
         if command is None:
             # The health gate already ran above, for every command, so the
             # violation check inside cannot fire. Kept as defense in depth: it
