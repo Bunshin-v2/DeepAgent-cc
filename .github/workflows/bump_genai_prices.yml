@@ -51,8 +51,6 @@
 name: "Bump genai-prices in deepagents-code"
 
 on:
-  schedule:
-    - cron: "17 13 * * *"
   workflow_dispatch:
 
 permissions:
