@@ -2,8 +2,6 @@ name: OpenWiki Update
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 8 * * *"
 
 permissions:
   contents: write
@@ -12,7 +10,6 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
-    environment: openwiki
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

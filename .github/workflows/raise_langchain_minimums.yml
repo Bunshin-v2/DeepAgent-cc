@@ -54,9 +54,6 @@ name: "📦 Raise dependency minimums"
 run-name: "Raise dependency minimums for ${{ inputs.package || 'all' }}${{ inputs.dependencies && format(' [{0}]', inputs.dependencies) || '' }}"
 
 on:
-  schedule:
-    # Daily 09:00 UTC.
-    - cron: "0 9 * * *"
   workflow_dispatch:
     inputs:
       package:
